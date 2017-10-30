@@ -16,8 +16,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import it.gmariotti.recyclerview.itemanimator.SlideInOutLeftItemAnimator;
 import it.gmariotti.recyclerview.itemanimator.SlideInOutRightItemAnimator;
@@ -36,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     int chosedPosition;//选中的位置
     FloatingActionButton FloatButton;//浮动的界面切换按钮
     int buyNum;//购买某个商品的数量
-
+//    public static EventBus eventBus;
 
 
     @Override
@@ -51,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         car_view.setAdapter(listAdapter);
         car_view.setVisibility(View.GONE);
         shopping_view.setVisibility(View.VISIBLE);
+        EventBus.getDefault().register(this);
+
+
+        MyBroadcast();
+
+
 
         recyclerAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener(){
             @Override
@@ -168,5 +179,28 @@ public class MainActivity extends AppCompatActivity {
         FloatButton = (FloatingActionButton)findViewById(R.id.shopcar);
     }
 
+    public void MyBroadcast(){
+
+        Random random = new Random();
+        Intent intentBroadcast = new Intent("RECOMMEND_GOODS");
+        Goods recommendGood = shoppingList.get(random.nextInt(shoppingList.size()));
+        intentBroadcast.putExtra("recommendGood",recommendGood);
+        sendBroadcast(intentBroadcast);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Goods purchasedgood) {
+        carList.add(purchasedgood);
+        listAdapter.notifyDataSetChanged();
+        shopping_view.setVisibility(View.GONE);
+        car_view.setVisibility(View.VISIBLE);
+        FloatButton.setImageResource(R.mipmap.mainpage);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
 }

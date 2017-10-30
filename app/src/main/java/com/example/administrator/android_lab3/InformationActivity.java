@@ -1,6 +1,7 @@
 package com.example.administrator.android_lab3;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Random;
+
+//import static com.example.administrator.android_lab3.MainActivity.eventBus;
 
 /**
  * Created by Administrator on 2017/10/26.
@@ -72,6 +79,18 @@ public class InformationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 buyNum++;
                 Toast.makeText(InformationActivity.this,"商品已添加到购物车",Toast.LENGTH_SHORT).show();
+
+                DynamicReceiver dynamicReceiver = new DynamicReceiver();
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction("SHOPPING");
+                registerReceiver(dynamicReceiver,intentFilter);
+
+                Intent intentBroadcast2 = new Intent("SHOPPING");
+                Goods purchasedGood = goods;
+                intentBroadcast2.putExtra("purchasedGood",purchasedGood);
+                sendBroadcast(intentBroadcast2);
+
+                EventBus.getDefault().post(purchasedGood);
             }
         });
 
@@ -90,5 +109,7 @@ public class InformationActivity extends AppCompatActivity {
         buyNum = 0;
 
     }
+
+
 
 }
