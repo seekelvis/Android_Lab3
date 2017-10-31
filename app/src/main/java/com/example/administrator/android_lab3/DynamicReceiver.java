@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 /**
@@ -30,10 +32,11 @@ public class DynamicReceiver extends BroadcastReceiver {
                     .setContentText(goods.name + "已添加到购物车！")
                     .setTicker("购买成功")
                     .setLargeIcon(bm)
-                    .setSmallIcon(goods.id)
+                    .setSmallIcon(R.mipmap.shoplist)
                     .setAutoCancel(true);
 
             Intent mIntent = new Intent(context, MainActivity.class);
+            mIntent.putExtra("view_select", (int ) 1);//传入参数选择跳转到购物车列表
             PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,FLAG_UPDATE_CURRENT);
             builder.setContentIntent(mPendingIntent);
             Notification notify = builder.build();

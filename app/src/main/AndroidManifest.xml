@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,6 +19,12 @@
         </activity>
         <activity android:name=".InformationActivity" />
 
+        <receiver android:name=".StaticReceiver"
+            android:exported="true">/*接收器名字和设置为可被其他应用的组建启动*/
+            <intent-filter>
+                <action android:name="RECOMMEND_GOODS"></action>/*动作名字*/
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

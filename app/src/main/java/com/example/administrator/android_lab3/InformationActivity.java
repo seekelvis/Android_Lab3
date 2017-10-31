@@ -36,6 +36,7 @@ public class InformationActivity extends AppCompatActivity {
     ListView option;//下面的更多操作
 //    ArrayAdapter<String> arrayAdapter;
     int buyNum;//购买次数
+    DynamicReceiver dynamicReceiver;//动态广播接收器
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -58,10 +59,11 @@ public class InformationActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("buyNum",buyNum);
-                intent.putExtra("haveCollected",goods.haveCollected);
-                setResult(1,intent);
+//                Intent intent = new Intent();
+//                intent.putExtra("buyNum",buyNum);
+//                intent.putExtra("haveCollected",goods.haveCollected);
+//                intent.putExtra("view_select", (int ) 0);
+//                setResult(1,intent);
                 finish();
             }
         });
@@ -71,6 +73,12 @@ public class InformationActivity extends AppCompatActivity {
                 goods.haveCollected = !goods.haveCollected;
                 if(goods.haveCollected) star.setImageResource(R.mipmap.full_star);
                 else star.setImageResource(R.mipmap.empty_star);
+
+                MessageEvent messageEvent = new MessageEvent();
+                messageEvent.initial();
+                messageEvent.collected_change = true;
+                messageEvent.goods = goods;
+                EventBus.getDefault().post(messageEvent);
             }
         });
 
@@ -79,18 +87,23 @@ public class InformationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 buyNum++;
                 Toast.makeText(InformationActivity.this,"商品已添加到购物车",Toast.LENGTH_SHORT).show();
-
-                DynamicReceiver dynamicReceiver = new DynamicReceiver();
+                //动态注册Receiver实例
+                dynamicReceiver = new DynamicReceiver();
                 IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction("SHOPPING");
+                intentFilter.addAction("SHOPPING");//注册动作名称
                 registerReceiver(dynamicReceiver,intentFilter);
-
+                //把购买的货物信息放入Intent，发布广播
                 Intent intentBroadcast2 = new Intent("SHOPPING");
                 Goods purchasedGood = goods;
                 intentBroadcast2.putExtra("purchasedGood",purchasedGood);
                 sendBroadcast(intentBroadcast2);
 
-                EventBus.getDefault().post(purchasedGood);
+                //把更改的信息，通过EventBus来传播出去。
+                MessageEvent messageEvent = new MessageEvent();
+                messageEvent.initial();
+                messageEvent.purchesed = true;
+                messageEvent.goods = goods;
+                EventBus.getDefault().post(messageEvent);
             }
         });
 
@@ -109,7 +122,12 @@ public class InformationActivity extends AppCompatActivity {
         buyNum = 0;
 
     }
-
+    @Override
+    protected void onDestroy(){//销毁广播接收器，防止内存泄漏
+        super.onDestroy();
+        if (dynamicReceiver != null)//要买过商品才不为空
+        unregisterReceiver(dynamicReceiver);
+    }
 
 
 }

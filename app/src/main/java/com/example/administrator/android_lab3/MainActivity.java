@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+/*接受从其他界面传来的intenet
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -155,8 +155,21 @@ public class MainActivity extends AppCompatActivity {
             shoppingList.get(chosedPosition).haveCollected = intent.getExtras().getBoolean("haveCollected");
             listAdapter.notifyDataSetChanged();
         }
-    }
+        if (resultCode == 5){
+            shopping_view.setVisibility(View.GONE);
+            car_view.setVisibility(View.VISIBLE);
+            FloatButton.setImageResource(R.mipmap.mainpage);
+        }
+        int a =(int) intent.getExtras().get("view_select");
 
+        if ( a == 1)
+        {
+            shopping_view.setVisibility(View.GONE);
+          car_view.setVisibility(View.VISIBLE);
+          FloatButton.setImageResource(R.mipmap.mainpage);
+        }
+    }
+*/
     public void initial(){
         shoppingList = new ArrayList<>();
         carList = new ArrayList<>();
@@ -180,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void MyBroadcast(){
-
         Random random = new Random();
         Intent intentBroadcast = new Intent("RECOMMEND_GOODS");
         Goods recommendGood = shoppingList.get(random.nextInt(shoppingList.size()));
@@ -189,12 +201,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(Goods purchasedgood) {
-        carList.add(purchasedgood);
-        listAdapter.notifyDataSetChanged();
-        shopping_view.setVisibility(View.GONE);
-        car_view.setVisibility(View.VISIBLE);
-        FloatButton.setImageResource(R.mipmap.mainpage);
+    public void onMessageEvent(MessageEvent messageEvent) {
+        if (messageEvent.purchesed == true){//购买操作，添加如购物车
+            carList.add(messageEvent.goods);
+            listAdapter.notifyDataSetChanged();
+        }
+        if (messageEvent.collected_change == true){//收藏操作，更新商品和购物车列表
+            for (int i =0; i < shoppingList.size(); i ++) {
+                if (shoppingList.get(i).id == messageEvent.goods.id)
+                    shoppingList.get(i).haveCollected = messageEvent.goods.haveCollected;
+            }
+            for (int i =0; i < carList.size(); i ++) {
+                if (carList.get(i).id == messageEvent.goods.id)
+                    carList.get(i).haveCollected = messageEvent.goods.haveCollected;
+            }
+        }
+        if (messageEvent.view_select != 0){
+            if (messageEvent.view_select == 1)//界面选测操作
+            {
+                car_view.setVisibility(View.GONE);
+                shopping_view.setVisibility(View.VISIBLE);
+                FloatButton.setImageResource(R.mipmap.shoplist);
+            }
+            else
+            {
+                shopping_view.setVisibility(View.GONE);
+                car_view.setVisibility(View.VISIBLE);
+                FloatButton.setImageResource(R.mipmap.mainpage);
+            }
+        }
+
+
+
+    }
+    @Override//一旦接受到新的intent
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int a =(int) intent.getExtras().get("view_select");
+        if ( a == 1)
+        {
+            shopping_view.setVisibility(View.GONE);
+            car_view.setVisibility(View.VISIBLE);
+            FloatButton.setImageResource(R.mipmap.mainpage);
+        }
     }
 
     @Override
@@ -204,3 +253,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
