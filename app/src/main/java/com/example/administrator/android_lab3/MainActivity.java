@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton FloatButton;//浮动的界面切换按钮
     int buyNum;//购买某个商品的数量
 //    public static EventBus eventBus;
+    static DynamicReceiver dynamicReceiver;//动态广播接收器
 
 
     @Override

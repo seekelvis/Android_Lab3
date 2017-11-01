@@ -19,7 +19,7 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public class DynamicReceiver extends BroadcastReceiver {
     private static final String DYNAMICION = "SHOPPING";
-
+    public static int notiNO = 10;
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("SHOPPING")){
@@ -40,7 +40,7 @@ public class DynamicReceiver extends BroadcastReceiver {
             PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,FLAG_UPDATE_CURRENT);
             builder.setContentIntent(mPendingIntent);
             Notification notify = builder.build();
-            manager.notify(5,notify);
+            manager.notify(goods.id+10,notify);
         }
 
     }

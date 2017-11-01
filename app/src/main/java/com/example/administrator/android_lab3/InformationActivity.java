@@ -36,7 +36,7 @@ public class InformationActivity extends AppCompatActivity {
     ListView option;//下面的更多操作
 //    ArrayAdapter<String> arrayAdapter;
     int buyNum;//购买次数
-    DynamicReceiver dynamicReceiver;//动态广播接收器
+    static DynamicReceiver dynamicReceiver;//动态广播接收器
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -88,7 +88,8 @@ public class InformationActivity extends AppCompatActivity {
                 buyNum++;
                 Toast.makeText(InformationActivity.this,"商品已添加到购物车",Toast.LENGTH_SHORT).show();
                 //动态注册Receiver实例
-                dynamicReceiver = new DynamicReceiver();
+                if (dynamicReceiver == null)
+                    dynamicReceiver = new DynamicReceiver();
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction("SHOPPING");//注册动作名称
                 registerReceiver(dynamicReceiver,intentFilter);
@@ -120,6 +121,7 @@ public class InformationActivity extends AppCompatActivity {
         information = (TextView) findViewById(R.id.information);
         option = (ListView) findViewById(R.id.option);
         buyNum = 0;
+
 
     }
     @Override
