@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,12 +20,26 @@
         </activity>
         <activity android:name=".InformationActivity" />
 
-        <receiver android:name=".StaticReceiver"
-            android:exported="true">/*接收器名字和设置为可被其他应用的组建启动*/
+        <receiver
+            android:name=".StaticReceiver"
+            android:exported="true">
+            /*接收器名字和设置为可被其他应用的组建启动*/
             <intent-filter>
-                <action android:name="RECOMMEND_GOODS"></action>/*动作名字*/
+                <action android:name="RECOMMEND_GOODS" />
+                /*动作名字*/
             </intent-filter>
         </receiver>
+        <receiver android:name=".MyWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="RECOMMEND_GOODS" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/my_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

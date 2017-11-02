@@ -2,4 +2,6 @@
     <!--<string name="app_name">Android_Lab3</string>-->
 
     <string name="app_name">Android_Lab4</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

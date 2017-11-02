@@ -3,11 +3,14 @@ package com.example.administrator.android_lab3;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.RemoteViews;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,6 +44,23 @@ public class DynamicReceiver extends BroadcastReceiver {
             builder.setContentIntent(mPendingIntent);
             Notification notify = builder.build();
             manager.notify(goods.id+10,notify);
+
+
+           RemoteViews updateViews = new RemoteViews(context.getPackageName(),R.layout.my_widget);
+//            Intent i = new Intent(context, InformationActivity.class);
+//            i.putExtra("goods",goods);
+//            PendingIntent pi = PendingIntent.getActivity(context,0,i, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//            i.addCategory(Intent.CATEGORY_LAUNCHER);
+
+            updateViews.setTextViewText(R.id.appwidget_text,goods.name + "已添加到购物车！");
+            updateViews.setImageViewResource(R.id.appwidget_image, goods.id);
+            updateViews.setOnClickPendingIntent(R.id.widget,mPendingIntent);
+
+            ComponentName me = new ComponentName(context, MyWidget.class);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            appWidgetManager.updateAppWidget(me, updateViews);
         }
 
     }

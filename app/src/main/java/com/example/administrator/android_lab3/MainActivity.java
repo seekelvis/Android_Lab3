@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity {
     @Override//一旦接受到新的intent
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        int a =(int) intent.getExtras().get("view_select");
-        if ( a == 1)
+//        int a =(int) intent.getExtras().get("view_select");
+//        if ( a == 1)
         {
             shopping_view.setVisibility(View.GONE);
             car_view.setVisibility(View.VISIBLE);
